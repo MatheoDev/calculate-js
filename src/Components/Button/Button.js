@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import './Button.css'
 
-const Button = ({ text, type }) => {
+const Button = ({ text, type, click }) => {
   const [style, setStyle] = useState(null)
 
   useEffect(() => {
@@ -20,10 +20,12 @@ const Button = ({ text, type }) => {
     })
   }, [])
 
+  const handleClick = (e) => {
+    click(e)
+  }
+
   return (
-    <button style={style}>
-      <span>{text}</span>
-    </button>
+    <input type="submit" className='btn' style={style} onClick={handleClick} value={text} />
   )
 }
 

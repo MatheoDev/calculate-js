@@ -1,6 +1,6 @@
-button {
+input.btn {
   transition: 0.2s;
 }
-button:hover {
+input.btn:hover {
   box-shadow: none !important;
 }
