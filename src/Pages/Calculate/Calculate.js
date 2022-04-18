@@ -6,6 +6,7 @@ import './Calculate.css'
 const Calculate = () => {
   const [calcul, setCalcul] = useState([])
   const [result, setResult] = useState('')
+  const [history, setHistory] = useState([])
 
   const handleClick = (e) => {
     // soit on clique sur un chiffre
@@ -29,21 +30,22 @@ const Calculate = () => {
       // calcule
       setCalcul([eval(calcul.join(''))])
       setResult(eval(calcul.join('')))
+      setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
     } else if (e.target.value && calcul.length > 0) {
-      // gestion du changement d'opérateur
+      // gestion du changement d'opérateur si click sur un opérateur différent du précédent
       if (/\d/.test(calcul.slice(-1)[0])) {
         setResult(eval(calcul.join('')))
+        if (calcul.length > 1) {
+          setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
+        }
       } else {
         setCalcul(calcul.splice(-1, 1))
       }
-      // gestion de la multiplication/division
+      // gestion de la multiplication/division/addition/soustraction
+      // calcul chainé
       // ex : 2 + 2 * 4 = 16 car on enchaine 2 + 2 = 4 => 4 * 4 = 16 
       // le vrai calcul est donc (2 + 2) * 4 = 16
-      if (e.target.value === '*' || e.target.value === '/') {
-        setCalcul([eval(calcul.join('')), e.target.value])
-      } else if (e.target.value === '+' || e.target.value === '-') {
-        setCalcul([...calcul, e.target.value])
-      }
+      setCalcul([eval(calcul.join('')), e.target.value])
     }
   }
 
@@ -53,13 +55,17 @@ const Calculate = () => {
         <div className="calculate__display">
           <input type="text" className="calculate__display--input" value={result} readOnly/>
           <div className='calculate__display--container'>
-            {json.calculate.map((item, index) => (
-              <Button key={index} text={item.value} type={item.type} click={handleClick} />
+            {json.calculate.map((char, index) => (
+              <Button key={index} text={char.value} type={char.type} click={handleClick} />
             ))}
           </div>
         </div>
         <div className='calculate__history'>
-
+          <div className="calculate__history--container">
+            {history.map((hist, index) => (
+              <div key={index} className="calculate__history--item">{hist}</div>
+            ))}
+          </div>
         </div>
       </div>
     </>
