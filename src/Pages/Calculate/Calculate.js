@@ -35,7 +35,8 @@ const Calculate = () => {
       // gestion du changement d'opérateur si click sur un opérateur différent du précédent
       if (/\d/.test(calcul.slice(-1)[0])) {
         setResult(eval(calcul.join('')))
-        if (calcul.length > 1) {
+        // si contient un opérateur on affiche l'historique
+        if (/[+=\-/*]/.test(calcul.join(''))) {
           setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
         }
       } else {
