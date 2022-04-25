@@ -6,6 +6,14 @@
   align-items: center;
   overflow: hidden;
 }
+@media (max-width: 768px) {
+  .calculate {
+    flex-direction: column;
+  }
+  .calculate__history {
+    width: 100% !important;
+  }
+}
 .calculate__display {
   width: 50%;
   height: 100%;
