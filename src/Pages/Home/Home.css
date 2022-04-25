@@ -14,38 +14,6 @@
     width: 100% !important;
   }
 }
-.calculate__display {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-}
-.calculate__display--input {
-  width: 200px;
-  height: 40px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: right;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0 15px;
-  border-bottom: 1px solid #082032;
-  box-shadow: 0px 10px 10px #082032;
-  background-color: transparent;
-  outline: none;
-}
-.calculate__display--container {
-  width: 250px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
 .calculate__history {
   width: 50%;
   height: 100%;

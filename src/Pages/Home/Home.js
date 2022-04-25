@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import Button from './../../Components/Button/Button'
-import json from '../../Data/calculate.json'
-import './Calculate.css'
+import Calculate from '../../Components/Calculate/Calculate'
+import './Home.css'
 
-const Calculate = () => {
+const Home = () => {
   const [calcul, setCalcul] = useState([])
   const [result, setResult] = useState('')
   const [history, setHistory] = useState([])
@@ -53,14 +52,7 @@ const Calculate = () => {
   return (
     <>
       <div className="calculate">
-        <div className="calculate__display">
-          <input type="text" className="calculate__display--input" value={result} readOnly/>
-          <div className='calculate__display--container'>
-            {json.calculate.map((char, index) => (
-              <Button key={index} text={char.value} type={char.type} click={handleClick} />
-            ))}
-          </div>
-        </div>
+        <Calculate handleClick={handleClick} result={result} />
         <div className='calculate__history'>
           <div className="calculate__history--container">
             {history.map((hist, index) => (
@@ -73,4 +65,4 @@ const Calculate = () => {
   )
 }
 
-export default Calculate
+export default Home
