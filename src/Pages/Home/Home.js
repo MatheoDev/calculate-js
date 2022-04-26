@@ -1,41 +1,53 @@
 import { useState } from 'react'
-import Button from './../../Components/Button/Button'
-import json from '../../Data/calculate.json'
-import './Calculate.css'
+import Calculate from '../../Components/Calculate/Calculate'
+import './Home.css'
 
-const Calculate = () => {
+/**
+ * Component for the home page
+ * @returns {JSX}
+ */
+const Home = () => {
   const [calcul, setCalcul] = useState([])
   const [result, setResult] = useState('')
   const [history, setHistory] = useState([])
 
-  const handleClick = (e) => {
+  /**
+   * Logique de la calculatrice
+   * @param {*} value 
+   * @returns 
+   */
+  const calculator = (value) => {
+    if (!/\d/.test(value) && !/[+=\-/*C]/.test(value)) {
+      return
+    }
     // soit on clique sur un chiffre
     // soit on clique sur C
     // soit on clique sur =
     // soit on clique sur un opérateur
-    if (/\d/.test(e.target.value)) {
-      setCalcul([...calcul, e.target.value])
+    if (/\d/.test(value)) {
+      setCalcul([...calcul, value])
       // si on le dernier caractère est un chiffre => on concatène
       // sinon on remplace le dernier chiffre/nombre par le nouveau
       if (/\d/.test(calcul.pop())) {
-        setResult(result + e.target.value)
+        setResult(result + value)
       } else {
-        setResult(e.target.value)
+        setResult(value)
       }
-    } else if (e.target.value === 'C') {
+    } else if (value === 'C') {
       // reset
       setCalcul([])
       setResult('')
-    } else if (e.target.value === '=' && calcul.length > 0) {
+    } else if (value === '=' && calcul.length > 0) {
       // calcule
       setCalcul([eval(calcul.join(''))])
       setResult(eval(calcul.join('')))
       setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
-    } else if (e.target.value && calcul.length > 0) {
+    } else if (value && calcul.length > 0) {
       // gestion du changement d'opérateur si click sur un opérateur différent du précédent
       if (/\d/.test(calcul.slice(-1)[0])) {
         setResult(eval(calcul.join('')))
-        if (calcul.length > 1) {
+        // si contient un opérateur on affiche l'historique
+        if (/[+=\-/*]/.test(calcul.join(''))) {
           setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
         }
       } else {
@@ -45,21 +57,31 @@ const Calculate = () => {
       // calcul chainé
       // ex : 2 + 2 * 4 = 16 car on enchaine 2 + 2 = 4 => 4 * 4 = 16 
       // le vrai calcul est donc (2 + 2) * 4 = 16
-      setCalcul([eval(calcul.join('')), e.target.value])
+      setCalcul([eval(calcul.join('')), value])
     }
   }
 
+  /**
+   * evenement impression clavier
+   * @param {*} event
+   */
+  const hanndleKeyPress = (event) => {
+    calculator(event.key)
+  }
+
+  /**
+   * evneemnt click sur les boutons
+   * @param {*} event
+   */
+  const handleClick = (event) => {
+    calculator(event.target.value)
+  }
+
+  // JSX 
   return (
     <>
-      <div className="calculate">
-        <div className="calculate__display">
-          <input type="text" className="calculate__display--input" value={result} readOnly/>
-          <div className='calculate__display--container'>
-            {json.calculate.map((char, index) => (
-              <Button key={index} text={char.value} type={char.type} click={handleClick} />
-            ))}
-          </div>
-        </div>
+      <div className="calculate" onKeyDown={hanndleKeyPress}>
+        <Calculate handleClick={handleClick} result={result} />
         <div className='calculate__history'>
           <div className="calculate__history--container">
             {history.map((hist, index) => (
@@ -72,4 +94,4 @@ const Calculate = () => {
   )
 }
 
-export default Calculate
+export default Home
