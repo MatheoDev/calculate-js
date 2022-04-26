@@ -7,30 +7,33 @@ const Home = () => {
   const [result, setResult] = useState('')
   const [history, setHistory] = useState([])
 
-  const handleClick = (e) => {
+  const calculator = (value) => {
+    if (!/\d/.test(value) && !/[+=\-/*C]/.test(value)) {
+      return
+    }
     // soit on clique sur un chiffre
     // soit on clique sur C
     // soit on clique sur =
     // soit on clique sur un opérateur
-    if (/\d/.test(e.target.value)) {
-      setCalcul([...calcul, e.target.value])
+    if (/\d/.test(value)) {
+      setCalcul([...calcul, value])
       // si on le dernier caractère est un chiffre => on concatène
       // sinon on remplace le dernier chiffre/nombre par le nouveau
       if (/\d/.test(calcul.pop())) {
-        setResult(result + e.target.value)
+        setResult(result + value)
       } else {
-        setResult(e.target.value)
+        setResult(value)
       }
-    } else if (e.target.value === 'C') {
+    } else if (value === 'C') {
       // reset
       setCalcul([])
       setResult('')
-    } else if (e.target.value === '=' && calcul.length > 0) {
+    } else if (value === '=' && calcul.length > 0) {
       // calcule
       setCalcul([eval(calcul.join(''))])
       setResult(eval(calcul.join('')))
       setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
-    } else if (e.target.value && calcul.length > 0) {
+    } else if (value && calcul.length > 0) {
       // gestion du changement d'opérateur si click sur un opérateur différent du précédent
       if (/\d/.test(calcul.slice(-1)[0])) {
         setResult(eval(calcul.join('')))
@@ -45,13 +48,21 @@ const Home = () => {
       // calcul chainé
       // ex : 2 + 2 * 4 = 16 car on enchaine 2 + 2 = 4 => 4 * 4 = 16 
       // le vrai calcul est donc (2 + 2) * 4 = 16
-      setCalcul([eval(calcul.join('')), e.target.value])
+      setCalcul([eval(calcul.join('')), value])
     }
+  }
+
+  const hanndleKeyPress = (e) => {
+    calculator(e.key)
+  }
+
+  const handleClick = (e) => {
+    calculator(e.target.value)
   }
 
   return (
     <>
-      <div className="calculate">
+      <div className="calculate" onKeyDown={hanndleKeyPress}>
         <Calculate handleClick={handleClick} result={result} />
         <div className='calculate__history'>
           <div className="calculate__history--container">
