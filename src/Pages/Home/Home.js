@@ -17,47 +17,66 @@ const Home = () => {
    * @returns 
    */
   const calculator = (value) => {
-    if (!/\d/.test(value) && !/[+=\-/*C]/.test(value)) {
+    if (!/\d/.test(value) && !/[\.+=\-/*C%]/.test(value)) {
       return
-    }
-    // soit on clique sur un chiffre
-    // soit on clique sur C
-    // soit on clique sur =
-    // soit on clique sur un opérateur
-    if (/\d/.test(value)) {
-      setCalcul([...calcul, value])
-      // si on le dernier caractère est un chiffre => on concatène
-      // sinon on remplace le dernier chiffre/nombre par le nouveau
-      if (/\d/.test(calcul.pop())) {
-        setResult(result + value)
+    } else if (/[\d\.]/.test(value)) {
+      setCalcul([calcul.join('').concat(value)])
+      if (/[\d\.]/.test(calcul.splice(-1, 1))) {
+        setResult(result.concat(value))
       } else {
         setResult(value)
       }
-    } else if (value === 'C') {
-      // reset
-      setCalcul([])
-      setResult('')
-    } else if (value === '=' && calcul.length > 0) {
-      // calcule
-      setCalcul([eval(calcul.join(''))])
-      setResult(eval(calcul.join('')))
-      setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
-    } else if (value && calcul.length > 0) {
-      // gestion du changement d'opérateur si click sur un opérateur différent du précédent
-      if (/\d/.test(calcul.slice(-1)[0])) {
-        setResult(eval(calcul.join('')))
-        // si contient un opérateur on affiche l'historique
-        if (/[+=\-/*]/.test(calcul.join(''))) {
-          setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
+      return
+    }
+
+    if (calcul.length === 0) { return }
+
+    switch (value) {
+      case '%':
+        const splited = calcul.join('').split(/[\+\-*/]/)
+        if (splited.length === 1) {
+          setCalcul([calcul.join('') / 100])
+          setResult(calcul.join('') / 100)
+        } else {
+          const replaced = calcul.join('').replace(splited[0], '')
+          const pourcent = replaced.replace(splited[1], splited[1] / 100)
+          setCalcul([splited[0].concat(pourcent)])
+          setResult(splited[1] / 100)
         }
-      } else {
-        setCalcul(calcul.splice(-1, 1))
-      }
-      // gestion de la multiplication/division/addition/soustraction
-      // calcul chainé
-      // ex : 2 + 2 * 4 = 16 car on enchaine 2 + 2 = 4 => 4 * 4 = 16 
-      // le vrai calcul est donc (2 + 2) * 4 = 16
-      setCalcul([eval(calcul.join('')), value])
+        break;
+      case 'C':
+        setCalcul([])
+        setResult('')
+        break;
+      case '=':
+        console.log(calcul.join(''))
+        setCalcul([eval(calcul.join(''))])
+        setResult(eval(calcul.join('')))
+        break;
+      case '+/-':
+        const splitedC = calcul.join('').split(/[\+\-*/]/)
+        if (splitedC.length === 1) { 
+          setCalcul([calcul.join('') * -1])
+          setResult(calcul.join('') * -1)
+        } else if (splitedC.length === 2 && splitedC[0] === '') { 
+          setCalcul([calcul.join('') * -1])
+          setResult(calcul.join('') * -1)
+        } else if (splitedC.length === 2 && !splitedC[1] === '') {
+          // const pourcent = replaced.replace(splited[1], splited[1] / 100) A REVOIR
+          // setCalcul([splitedC[0].concat(splitedC[1] * -1)])
+          // setResult(splitedC[1] * -1)
+        } else {
+          // const replaced = calcul.join('').replace(splitedC[0], '')
+          // const pourcent = replaced.replace(splitedC[1], splitedC[1] * -1) A REVOIR
+          // setCalcul([splitedC[0].concat(pourcent)])
+          // setResult(splitedC[1] * -1)
+        }
+        break;
+      default:
+        setCalcul([...calcul, value])
+        setResult(eval(calcul.join('')))
+        setHistory([...history, calcul.join('').concat(' = ').concat(result)])
+        break;
     }
   }
 
