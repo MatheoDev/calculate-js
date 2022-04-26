@@ -8,9 +8,10 @@ import './Button.css'
  * @param {Function} click 
  * @returns {JSX}
  */
-const Button = ({ text, type, click }) => {
+const Button = ({ text, type, size, click }) => {
   // style du bouton en fonction du type
   const styled = {
+    width: size === 'big' ? '110px' : '50px',
     backgroundColor: type === "primary" ? "#F0A500" : "#334756",
     color: type === "primary" ? "#fff" : "#fff",
   }

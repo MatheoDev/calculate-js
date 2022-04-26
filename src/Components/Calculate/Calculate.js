@@ -14,7 +14,7 @@ const Calculate = ({result, handleClick}) => {
       <input type="text" className="calculate__display--input" value={result} readOnly/>
       <div className='calculate__display--container'>
         {json.calculate.map((char, index) => (
-          <Button key={index} text={char.value} type={char.type} click={handleClick} />
+          <Button key={index} text={char.value} type={char.type} click={handleClick} size={char.size} />
         ))}
       </div>
     </div>

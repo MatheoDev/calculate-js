@@ -66,7 +66,7 @@ const Home = () => {
    * @param {*} event
    */
   const hanndleKeyPress = (event) => {
-    calculator(event.key)
+    calculator(event.key.toUpperCase())
   }
 
   /**
