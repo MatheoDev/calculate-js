@@ -2,11 +2,20 @@ import { useState } from 'react'
 import Calculate from '../../Components/Calculate/Calculate'
 import './Home.css'
 
+/**
+ * Component for the home page
+ * @returns {JSX}
+ */
 const Home = () => {
   const [calcul, setCalcul] = useState([])
   const [result, setResult] = useState('')
   const [history, setHistory] = useState([])
 
+  /**
+   * Logique de la calculatrice
+   * @param {*} value 
+   * @returns 
+   */
   const calculator = (value) => {
     if (!/\d/.test(value) && !/[+=\-/*C]/.test(value)) {
       return
@@ -52,14 +61,23 @@ const Home = () => {
     }
   }
 
-  const hanndleKeyPress = (e) => {
-    calculator(e.key)
+  /**
+   * evenement impression clavier
+   * @param {*} event
+   */
+  const hanndleKeyPress = (event) => {
+    calculator(event.key)
   }
 
-  const handleClick = (e) => {
-    calculator(e.target.value)
+  /**
+   * evneemnt click sur les boutons
+   * @param {*} event
+   */
+  const handleClick = (event) => {
+    calculator(event.target.value)
   }
 
+  // JSX 
   return (
     <>
       <div className="calculate" onKeyDown={hanndleKeyPress}>

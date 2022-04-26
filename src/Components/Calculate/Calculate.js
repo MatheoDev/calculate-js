@@ -2,6 +2,12 @@ import json from '../../Data/calculate.json'
 import Button from '../Button/Button'
 import './Calculate.css'
 
+/**
+ * Component for the Calculate
+ * @param {String} result
+ * @param {Function} handleClick
+ * @returns {JSX}
+ */
 const Calculate = ({result, handleClick}) => {
   return (
     <div className="calculate__display">
