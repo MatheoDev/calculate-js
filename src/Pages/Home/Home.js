@@ -56,6 +56,7 @@ const Home = () => {
         setHistory([...history, calcul.join('').concat(result).concat('=').concat(resultCalcul)])
         break
       default:
+        if (result === '.' || result === '') { return }
         const resultCalculChaine = calcul.length ? eval(calcul.join('').concat(result)).toString() : ''
         calcul.length ? setCalcul([eval(calcul.join('').concat(result)).toString(), operator]) : setCalcul([result, operator])
         setResult(eval(calcul.join('').concat(result)).toString())
@@ -86,7 +87,10 @@ const Home = () => {
    * @param {*} event
    */
   const hanndleKeyPress = (event) => {
-    calculator(event.key.toUpperCase())
+    let value = event.key.toUpperCase()
+    if (value === 'ENTER') { value = '=' }
+    else if (value === 'N') { value = '+/-' }
+    calculator(value)
   }
 
   /**
