@@ -52,7 +52,7 @@ const Home = () => {
       case '=':
         const resultCalcul = eval(calcul.join('').concat(result)).toString()
         setResult(resultCalcul)
-        setCalcul([resultCalcul])
+        setCalcul([])
         setHistory([...history, calcul.join('').concat(result).concat('=').concat(resultCalcul)])
         break
       default:
