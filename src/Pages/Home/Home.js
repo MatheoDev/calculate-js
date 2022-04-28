@@ -10,54 +10,75 @@ const Home = () => {
   const [calcul, setCalcul] = useState([])
   const [result, setResult] = useState('')
   const [history, setHistory] = useState([])
+  const [isChain, setIsChain] = useState(false)
 
   /**
-   * Logique de la calculatrice
+   * logics for the concatenation of the result
+   * @param {String} number 
+   * @returns 
+   */
+  const calculatorNumber = (number) => {
+    if (result && result.includes('.') && number === '.') {
+      return
+    }
+    if ((calcul.length && isChain)) {
+      setResult(number)
+      setIsChain(false)
+    } else if (result === 'Infinity'
+      || result === 'NaN' || result === '-Infinity'
+      || result === '-NaN' || result === '0') {
+      setCalcul([])
+      setResult(number)
+      setIsChain(false)
+    } else { setResult(result.concat(number)) }
+  }
+
+  /**
+   * logics for the operation of the result
+   * @param {String} operator 
+   */
+  const calculatorOperator = (operator) => {
+    switch (operator) {
+      case '+/-':
+        setResult(`${result * -1}`)
+        break
+      case '%':
+        setResult(`${result / 100}`)
+        break
+      case 'C':
+        setResult('')
+        setCalcul([])
+        break
+      case '=':
+        const resultCalcul = eval(calcul.join('').concat(result)).toString()
+        setResult(resultCalcul)
+        setCalcul([])
+        setHistory([...history, calcul.join('').concat(result).concat('=').concat(resultCalcul)])
+        break
+      default:
+        if (result === '.' || result === '') { return }
+        const resultCalculChaine = calcul.length ? eval(calcul.join('').concat(result)).toString() : ''
+        calcul.length ? setCalcul([eval(calcul.join('').concat(result)).toString(), operator]) : setCalcul([result, operator])
+        setResult(eval(calcul.join('').concat(result)).toString())
+        calcul.length && setHistory([...history, calcul.join('').concat(result).concat('=').concat(resultCalculChaine)])
+        setIsChain(true)
+        break
+    }
+  }
+
+  /**
+   * logique de la calculatrice
    * @param {*} value 
    * @returns 
    */
   const calculator = (value) => {
-    if (!/\d/.test(value) && !/[+=\-/*C]/.test(value)) {
+    if (!/\d/.test(value) && !/[.+=\-/*C%]/.test(value)) {
       return
     }
-    // soit on clique sur un chiffre
-    // soit on clique sur C
-    // soit on clique sur =
-    // soit on clique sur un opérateur
-    if (/\d/.test(value)) {
-      setCalcul([...calcul, value])
-      // si on le dernier caractère est un chiffre => on concatène
-      // sinon on remplace le dernier chiffre/nombre par le nouveau
-      if (/\d/.test(calcul.pop())) {
-        setResult(result + value)
-      } else {
-        setResult(value)
-      }
-    } else if (value === 'C') {
-      // reset
-      setCalcul([])
-      setResult('')
-    } else if (value === '=' && calcul.length > 0) {
-      // calcule
-      setCalcul([eval(calcul.join(''))])
-      setResult(eval(calcul.join('')))
-      setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
-    } else if (value && calcul.length > 0) {
-      // gestion du changement d'opérateur si click sur un opérateur différent du précédent
-      if (/\d/.test(calcul.slice(-1)[0])) {
-        setResult(eval(calcul.join('')))
-        // si contient un opérateur on affiche l'historique
-        if (/[+=\-/*]/.test(calcul.join(''))) {
-          setHistory([...history, calcul.join('') + ' = ' + eval(calcul.join(''))])
-        }
-      } else {
-        setCalcul(calcul.splice(-1, 1))
-      }
-      // gestion de la multiplication/division/addition/soustraction
-      // calcul chainé
-      // ex : 2 + 2 * 4 = 16 car on enchaine 2 + 2 = 4 => 4 * 4 = 16 
-      // le vrai calcul est donc (2 + 2) * 4 = 16
-      setCalcul([eval(calcul.join('')), value])
+    if (/[\d.]/.test(value)) {
+      calculatorNumber(value)
+    } else {
+      calculatorOperator(value)
     }
   }
 
@@ -66,7 +87,10 @@ const Home = () => {
    * @param {*} event
    */
   const hanndleKeyPress = (event) => {
-    calculator(event.key)
+    let value = event.key.toUpperCase()
+    if (value === 'ENTER') { value = '=' }
+    else if (value === 'N') { value = '+/-' }
+    calculator(value)
   }
 
   /**
